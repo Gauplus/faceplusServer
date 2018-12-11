@@ -24,8 +24,9 @@ app.use('/login',loginRouter);
 // app.use('/signin',siginRouter);
 
 var server = app.listen(3000, function () {
-  var host = server.address().address
-  var port = server.address().port
+  var host = server.address().address;
+  var port = server.address().port;
+  console.log("http://"+host+":"+post);
   console.log("启动成功");
 })
 
