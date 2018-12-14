@@ -1,8 +1,9 @@
+
+
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/Looking";
 
-MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    console.log("数据库已创建!");
-});
-return MongoClient;
+exports.insert function insertData(db){
+    var devices = db.collection('text')
+
+

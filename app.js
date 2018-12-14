@@ -7,6 +7,10 @@ var logger = require('morgan');
 
 var app = express();
 
+var bodyParser = require('body-parser');
+
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -17,11 +21,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const loginRouter = require('./routes/login/login');
-// const siginRouter = require('./routes/login/signin');
 
-app.use('/login',loginRouter);
-// app.use('/signin',siginRouter);
+require('./routes/routeAPi.js')(app);
+//
+// app.use('/login',loginRouter);
+// // app.use('/signin',siginRouter);
 
 var server = app.listen(3000, function () {
   var host = server.address().address;

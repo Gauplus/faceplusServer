@@ -1,34 +1,24 @@
-//对教师信息的增删查改
-var MongoClient = require('mongodb').MongoClient,
-    assert = require('assert');
-
-// Connection URL
-var url = 'mongodb://192.168.0.243:27017/myNewDatabase';
-
-MongoClient.connect(url,function(err,db){
-    assert.equal(null,err);
-    console.log("Connection successfully to server");
-    db.close();
-});
 
 
-exports.qureyInfo = function (req,res,next) {   //返回每个教师的json格式的数据
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/Looking";
+
+exports.connect = function(db,erro){
 
 }
 
-
-exports.insertInfo = function () {      //用于教师注册时增加数据库记录
-      let tname = req.body.tname;
-      let tid   = req.body.tid;
-      let pwd   = req.body.pwd;
+exports.insert = function (db,erro) {
+    var devices = db.collection('text')
 }
 
-exports.modifyInfo = function () {
+exports.query = function (db,erro) {
 
 }
 
-exports.deleteInfo = function () {
+exports.modify = function (db,erro) {
 
 }
 
+exports.delete = function (db,erro) {
 
+}
