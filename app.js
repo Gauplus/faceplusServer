@@ -21,17 +21,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+var dao = require('./controllers/teacherInfoDao');
 require('./routes/routeAPi.js')(app);
-//
-// app.use('/login',loginRouter);
-// // app.use('/signin',siginRouter);
+
+
+// dao.getTeacherInfo("12345");
 
 var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
-  console.log("http://"+host+":"+port);
+  console.log("http://"+host+":" +port);
   console.log("启动成功");
-})
+});
 
 module.exports = app;

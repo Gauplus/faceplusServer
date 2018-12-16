@@ -63,7 +63,7 @@ const IMAGE_Text = IMAGE_CN + "v1/recognizetext";
  *  isChina : 是否是国内用户
  */
 
-function FACEPP(apikey, apisecret, isChina) {
+exports.facepp = function(apikey, apisecret, isChina) {
     apikey = '2eUS6nEMoyY6FQWH78TSyjsMtmQrJsla';
     apisecret = 'QkC_P5WsmcQQOC9i_JBW0MhV4tIcUaqx';
 
