@@ -1,6 +1,7 @@
 //注意let和var的区别 let 必须初始化
-var teacherDao =  require("./teacherInfoDao")
-exports.login = async function (req, res, next) {
+var teacherDao =  require("./teacherInfoDao");
+var courseDao = require('./courseDao');
+exports.login = async function (req, res, next) {     //测试完成
     var tid = req.body.tid;
     var pwd = req.body.pwd;
     var result = await teacherDao.query(tid, pwd);
@@ -17,7 +18,7 @@ exports.login = async function (req, res, next) {
 
 };
 
-exports.register = async function (req,res,next) {
+exports.register = async function (req,res,next) {  //测试完成
 
 
         var tid = req.body.tid;
@@ -36,18 +37,24 @@ exports.register = async function (req,res,next) {
             res.send("未知错误");
 };
 
-exports.getTeacherInfo =async function (req,res,next) {
+exports.getTeacherInfo =async function (req,res,next) {        //已测试
     var tid = req.body.tid;
     var info = await teacherDao.getTeacherInfo(tid);
     res.send(JSON.stringify(info));
 };
 
 exports.modifyTeacherInfo = function (req,res,next) {
-
+    var name = req.name;
+    var nickname = req.nickname;
+    var birth = req.birth;
+    var gender = req.gender;
+    var school = req.school;
 };
 
-exports.getCourses = function (req,res,next) {
-
+exports.getCourses =async function (req,res,next) {       //测试完成 ,移动端发送tid
+         var tid = req.body.tid;
+         var course =await courseDao.query(tid);
+         res.send(JSON.stringify(course));
 };
 
 exports.getStudentList = function (req,res,next) {
@@ -60,4 +67,21 @@ exports.getRecords = function (req,res,next) {
 
 exports.attendence = function(req,res,next){
 
-}
+};
+
+exports.getStudentList = async function (req, res, next) {
+    /*
+    * 接受客户端上传的四个参数
+    * @param tid 教师id
+    * @param ctime 课程时间
+    * @param place 课程地点
+    * @param cid 课程id
+    * return slist 学生列表
+    */
+    var tid = req.body.tid;
+    var ctime = req.body.ctime;
+    var place = req.body.place;
+    var cid = req.body.cid;
+    var slist = await courseDao.getStudentList(tid, ctime, place, cid);
+    res.send(Json.stringify(slist));
+};

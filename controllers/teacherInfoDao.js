@@ -54,8 +54,8 @@ exports.getTeacherInfo = async function(tid){
         db = await mongoClient.connect(url);
         var teacherTable = await db.db("Looking").collection("teacher");
         result = await teacherTable.findOne({tid :tid});
-        var info = {tid:result.tid,tname:result.tname};
-        console.log(info);
+        var info = {tid:result.tid,tname:result.tname,phone:result.phone};
+        // console.log(result);
         return info;
     }catch(e){
         console.error(e.message);
