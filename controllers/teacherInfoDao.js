@@ -12,7 +12,7 @@ exports.query = async function(tid,pwd){
         var url = 'mongodb://localhost:27017/Looking';
         let db, result,index;
         try{
-            db = await mongoClient.connect(url);
+            db = await mongoClient.connect(url,{ useNewUrlParser: true } );
             var teacherTable = await db.db("Looking").collection("teacher");
             result = await teacherTable.findOne({tid :tid});
             if(result == null)
@@ -35,11 +35,11 @@ exports.query = async function(tid,pwd){
         }catch(e){
             console.error(e.message);
         }
-
+    db.close();
         return index;
     };
 
-exports.getTeacherInfo = async function(tid){
+exports.getTeacherInfo = async function(tid){          //根据tid获取教师信息
     /*
     * @param tid  teacher tid
     * @param pwd  teacher pwd
@@ -51,17 +51,19 @@ exports.getTeacherInfo = async function(tid){
     var url = 'mongodb://localhost:27017/Looking';
     let db, result,index;
     try{
-        db = await mongoClient.connect(url);
+        db = await mongoClient.connect(url,{ useNewUrlParser: true } );
         var teacherTable = await db.db("Looking").collection("teacher");
         result = await teacherTable.findOne({tid :tid});
-        var info = {tid:result.tid,tname:result.tname,phone:result.phone};
+        console.log(result);
+        var info = {tid:result.tid,btime:result.btime,tname:result.tname,phone:result.tel,kname:result.kname,gender:result.sex,fac:result.fac};
         // console.log(result);
+        db.close();
         return info;
     }catch(e){
         console.error(e.message);
     }
 
-    return index;
+
 };
 
 
@@ -91,6 +93,7 @@ exports.insert =   async function (tid, tname, pwd) {
         } else {
             index = 0
         }
+        db.close();
         return index;
     } catch (e) {
         console.log(e.message);
@@ -101,45 +104,28 @@ exports.insert =   async function (tid, tname, pwd) {
 
 
 
-exports.modify =   async function (tid, tname, pwd) {
+exports.update =   async function (tid, tname,kname,gender,birth,fac) {
     /*
-    * @param tid 教师id
-    * @param tname 教师姓名
-    * @param pwd 密码
-    * return 0 注册失败
-    *        1 注册成功
-    *        2 已经注册
+    *
     */
 
     var url = 'mongodb://localhost:27017/Looking';
-    let db, result, index;
+    let db, result;
     try {
 
         db = await mongoClient.connect(url);
         var teacherTable = await db.db("Looking").collection("teacher");
-        result = await teacherTable.findOne({tid: tid});
-        if (result === null) {
-            result = await teacherTable.insertOne({tid: tid, tname: tname, pwd: pwd})
-            index = 1;
-        } else if (result.tid === tid) {
-            index = 2;
-        } else {
-            index = 0
-        }
-        return index;
+        result = await teacherTable.updateOne({tid: tid},{$set:{tname:tname,kname:kname,sex:gender,btime:birth,fac:fac}});
+        console.log(result.kname);
+        db.close();
     } catch (e) {
         console.log(e.message);
     }
 };
-
-exports.delete =   async function (tid, tname, pwd) {   //暂时用不到
-    /*
-    * @param tid 教师id
-    * @param tname 教师姓名
-    * @param pwd 密码
-    * return 0 注册失败
-    *        1 注册成功
-    *        2 已经注册
-    */
-
-};
+//
+// exports.delete =   async function (tid, tname, pwd) {   //暂时用不到
+//     /*
+//
+//     */
+//
+// };

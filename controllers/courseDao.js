@@ -10,10 +10,10 @@ exports.query = async function(tid){             //根据教师tid 查询其课�
     var url = 'mongodb://localhost:27017/Looking';
     let db, result;
     try{
-        db = await mongoClient.connect(url);
+        db = await mongoClient.connect(url,{useNewUrlParser: true});
         var courseTable = await db.db("Looking").collection("course");
-        result = await courseTable.find ({tid :"12345"}).toArray();
-        // console.log(result[0]);
+        result = await courseTable.find({tid:tid}).toArray();
+        console.log(result);
         var course = [];
         var i;
         for(i=0;i<result.length;i++)
@@ -21,6 +21,7 @@ exports.query = async function(tid){             //根据教师tid 查询其课�
             course.push(result[i]);
         }
         // console.log(course);
+        db.close();
        return course;
     }catch(e){
         console.error(e.message);
@@ -28,54 +29,30 @@ exports.query = async function(tid){             //根据教师tid 查询其课�
 
 };
 
-exports.getTeacherInfo = async function(tid){
+
+
+
+exports.insert =   async function (cid, cname, place) {
     /*
-    * @param tid  teacher tid
-    * @param pwd  teacher pwd
-    * return  0   no register  尚未注册
-    *         1   pwd erro     密码错误
-    *         2   pass         验证成功
-    *         -1   其他错误
-    * */
-    var url = 'mongodb://localhost:27017/Looking';
-    let db, result,index;
-    try{
-        db = await mongoClient.connect(url);
-        var teacherTable = await db.db("Looking").collection("teacher");
-        result = await teacherTable.findOne({tid :tid});
-        var info = {tid:result.tid,tname:result.tname};
-        console.log(info);
-        return info;
-    }catch(e){
-        console.error(e.message);
-    }
-
-    return index;
-};
-
-
-
-exports.insert =   async function (tid, tname, pwd) {
-    /*
-    * @param tid 教师id
-    * @param tname 教师姓名
-    * @param pwd 密码
-    * return 0 注册失败
-    *        1 注册成功
-    *        2 已经注册
+    * @param cid 课程id
+    * @param cname 课程名
+    * @param place 地点
+    * return 0 插入失败
+    *        1 插入成功
+    *        2 已经存在
     */
 
     var url = 'mongodb://localhost:27017/Looking';
     let db, result, index;
     try {
 
-        db = await mongoClient.connect(url);
-        var teacherTable = await db.db("Looking").collection("teacher");
-        result = await teacherTable.findOne({tid: tid});
+        db = await mongoClient.connect(url,{useNewUrlParser: true});
+        var courseTable = await db.db("Looking").collection("course");
+        result = await courseTable.findOne({cid: tid});
         if (result === null) {
-            result = await teacherTable.insertOne({tid: tid, tname: tname, pwd: pwd})
+            result = await teacherTable.insertOne({cid: cid, cname: cname, place: place,tid:tid})
             index = 1;
-        } else if (result.tid === tid) {
+        } else if (result.cid === cid) {
             index = 2;
         } else {
             index = 0
@@ -116,7 +93,7 @@ exports.getStudentList  =   async function (tid,ctime,place,cid) {
             }
             slist.push(student);
         }
-
+        db.close();
         return slist;
     } catch (e) {
         console.log(e.message);

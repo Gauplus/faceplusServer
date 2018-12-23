@@ -65,14 +65,14 @@ exports.insert =   async function (tid,sid,sname,time,isAttend,state) {         
 
 
 
-exports.modify =   async function (tid,ctime,place,cid) {  //留着用于补签
+exports.modify =   async function (tid,ctime,place,cid,sid) {  //留着用于补签
 
 };
 
-exports.delete =   async function (tid, tname, pwd) {   //暂时用不到
-
-
-};
+// exports.delete =   async function (tid, tname, pwd) {   //暂时用不到
+//
+//
+// };
 
 
 
