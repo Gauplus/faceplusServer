@@ -16,9 +16,16 @@ exports.query = async function(tid){             //根据教师tid 查询其课�
         console.log(result);
         var course = [];
         var i;
+
         for(i=0;i<result.length;i++)
         {
-            course.push(result[i]);
+            var info = {
+                cid:result[i].cid,
+                cname:result[i].cname,
+                place:result[i].place,
+                ctime:result[i].ctime
+            }
+            course.push(info);
         }
         // console.log(course);
         db.close();

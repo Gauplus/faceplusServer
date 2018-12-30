@@ -2,21 +2,24 @@
 var teacherDao =  require("./teacherInfoDao");
 var courseDao = require('./courseDao');
 var studentListDao = require('./studentListDao');
-
-
+var formidable = require('formidable');
+var path = require('path');
+var querystring = require('querystring')
+var fs = require('fs');
+var count = 0;
 exports.login = async function (req, res, next) {     //测试完成
-    var tid = req.body.tid;
-    var pwd = req.body.pwd;
+    var tid = req.body.id;
+    var pwd = req.body.password;
     var result = await teacherDao.query(tid, pwd);
     // console.log(result);
     if (result === 0) {
-        res.send("尚未注册")
+        res.send("null")
     } else if (result === 1) {
-        res.send("用户名或密码错误");
+        res.send("error");
     } else if (result === 2) {
-        res.send("登录成功")
+        res.send("OK")
     } else {
-        res.send("未知错误")
+        res.send("")
     }
 
 };
@@ -30,19 +33,18 @@ exports.register = async function (req,res,next) {  //测试完成
         var result = await teacherDao.insert(tid,tname,pwd);
         if(result === 2 )
         {
-            res.send("您已注册，请前往登录");
+            res.send("registered");
         }
         else if(result === 1)
         {
-            res.send("注册成功");
+            res.send("OK");
         }
         else
-            res.send("未知错误");
+            res.send("error");
 };
 
 exports.getTeacherInfo =async function (req,res,next) {        //finish
-    var tid = req.query.tid;
-    console.log(tid);
+    var tid = req.query.id;
     var info = await teacherDao.getTeacherInfo(tid);
     res.send(JSON.stringify(info));
 };
@@ -54,14 +56,16 @@ exports.modifyTeacherInfo = async  function (req,res,next) {  //finish
     var gender = req.body.gender;
     var fac = req.body.school;
     var tid = req.body.tid;
-    teacherDao.update(tid,name,kname,gender,birth,fac);
-    res.send("修改成功");
+    // console.log(tid);
+    var result =await teacherDao.update(tid,name,kname,gender,birth,fac);
+    console.log(result)
+    res.send(JSON.stringify(result));
 
 };
 
 exports.getCourses =async function (req,res,next) {       //测试完成 ,移动端发送tid
          var tid = req.query.tid;
-         console.log(tid);
+         // console.log(tid);
          var course =await courseDao.query(tid);
          res.send(JSON.stringify(course));
 };
@@ -82,6 +86,59 @@ exports.getRecords = function (req,res,next) {
 };
 
 exports.attendence = function(req,res,next){
+    req.setEncoding('binary');
+    var body = '';   // 文件数据
+    var fileName = '';  // 文件名
 
+    // 边界字符串
+    var boundary = req.headers['content-type'].split('; ')[1].replace('boundary=','');
+    req.on('data', function(chunk){
+        body += chunk;
+    });
+
+    req.on('end', function() {
+        var file = querystring.parse(body, '\r\n', ':')
+
+        // 只处理图片文件
+        if (file['Content-Type'].indexOf("image") !== -1)
+        {
+            //获取文件名
+            var fileInfo = file['Content-Disposition'].split('; ');
+            for (value in fileInfo){
+                if (fileInfo[value].indexOf("filename=") != -1){
+                    fileName = count+".jpg";
+
+                    if (fileName.indexOf('\\') != -1){
+                        fileName = fileName.substring(fileName.lastIndexOf('\\')+1);
+                    }
+                    console.log("文件名: " + fileName);
+                }
+            }
+
+            // 获取图片类型(如：studentImage/gif 或 studentImage/png))
+            var entireData = body.toString();
+            var contentTypeRegex = /Content-Type: image\/.*/;
+
+            contentType = file['Content-Type'].substring(1);
+
+            //获取文件二进制数据开始位置，即contentType的结尾
+            var upperBoundary = entireData.indexOf(contentType) + contentType.length;
+            var shorterData = entireData.substring(upperBoundary);
+
+            // 替换开始位置的空格
+            var binaryDataAlmost = shorterData.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+
+            // 去除数据末尾的额外数据，即: "--"+ boundary + "--"
+            var binaryData = binaryDataAlmost.substring(0, binaryDataAlmost.indexOf('--'+boundary+'--'));
+
+            // 保存文件
+            fs.writeFile(path.join('./studentImage', fileName), binaryData, 'binary', function(err) {
+                res.send('图片上传完成');
+                count = count+1;
+            });
+        } else {
+            res.send('只能上传图片文件');
+        }
+    });
 };
 

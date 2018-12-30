@@ -1,7 +1,7 @@
 //api接口地址
 //base url for China
 var bodyParser = require('body-parser');
-
+var atob = require('atob');
 
 var jsdom = require('jsdom');
 const { JSDOM } = jsdom;
@@ -15,7 +15,6 @@ var jQuery = require('jquery')(window);
 
 
 const FACE_HOST_CN = "https://api-cn.faceplusplus.com/";
-const FACE_HOST_US = "https://api-us.faceplusplus.com/";
 
 const FACE_FACEPP = "facepp/v3/";
 const FACE_DETECT = FACE_FACEPP + "detect";
@@ -58,147 +57,15 @@ let apisecret = 'QkC_P5WsmcQQOC9i_JBW0MhV4tIcUaqx';
  *  apisecret : 填写 apisecret
  *  isChina : 是否是国内用户
  */
-
-exports.FACEPP = function() {
-
-
-    this.apisecret = apisecret;
-    this.isChina = 1;
-
-    if (1) {
-        this.baseurl = FACE_HOST_CN;
-
-    } else {
-        this.baseurl = FACE_HOST_US;
-    }
-
     //人脸检测
-    this.detectFace = function (param, success, failed) {
+    exports.detectFace = function (param, success, failed) {
 
-        var url = this.baseurl + FACE_DETECT;
+        var url = FACE_HOST_CN + FACE_DETECT;
         this.request(url, param, success, failed);
     };
 
-    //人脸比对
-    this.compareFace = function (param, success, failed) {
-        var url = this.baseurl + FACE_COMPARE;
-        this.request(url, param, success, failed);
-    };
+    exports.dataURItoBlob = function(dataURI) { // 图片转成Buffer
 
-    //**************对faceset(人脸集合)的操作***************
-
-    // 创建faceset
-    this.faceSetCreate = function (param, success, failed) {
-        var url = this.baseurl + FACESET_CREATE;
-        this.request(url, param, success, failed);
-    };
-
-    // 删除faceset
-    this.faceSetdelete = function (param, success, failed) {
-        var url = this.baseurl + FACESET_DELETE;
-        this.request(url, param, success, failed);
-    };
-
-    //faceset 更新
-    this.faceSetUpdate = function (param, success, failed) {
-        var url = this.baseurl + FACESET_UPDATE;
-        this.request(url, param, success, failed);
-    };
-
-    // 查询指定的faceset
-    this.faceSetQuery = function (param, success, failed) {
-        var url = this.baseurl + FACESET_GET_DETAIL;
-        this.request(url, param, success, failed);
-    };
-
-    // 获取所有的faceset
-    this.faceSetGetAll = function (param, success, failed) {
-        var url = this.baseurl + FACESET_GET_FACESETS;
-        this.request(url, param, success, failed);
-    };
-
-
-    //**************管理指定faceset内的人脸***************
-
-    //人脸搜索,根据相似度搜索人脸
-    this.faceSearch = function (param, success, failed) {
-        var url = this.baseurl + FACE_SEARCH;
-        this.request(url, param, success, failed);
-    };
-
-    // 添加人脸到指定faceset
-    this.faceAdd = function (param, success, failed) {
-        var url = this.baseurl + FACESET_ADDFACE;
-        this.request(url, param, success, failed);
-    };
-
-    // 删除指定faceset中的某个人脸
-    this.faceDelete = function (param, success, failed) {
-        var url = this.baseurl + FACESET_REMOVE_FACE;
-        this.request(url, param, success, failed);
-    };
-
-    // 异步添加人脸到指定faceset
-    this.faceAddAsnc = function (param, success, failed) {
-        var url = this.baseurl + FACESET_ADDFACE_ASYNC;
-        this.request(url, param, success, failed);
-    };
-
-    // 异步删除指定faceset中的某个人脸
-    this.faceDelete = function (param, success, failed) {
-        var url = this.baseurl + FACESET_REMOVE_FACE_ASYNC;
-        this.request(url, param, success, failed);
-    };
-
-    // 异步任务状态查询
-    this.asyncStatus = function (param, success, failed) {
-        var url = this.baseurl + FACEAET_TASK_QUERY;
-        this.request(url, param, success, failed);
-    };
-
-    //**************对facetoken(人脸标识)的操作***************
-    // 设置userid
-    this.facetokenSetUserID = function (param, success, failed) {
-        var url = this.baseurl + FACETOEKN_SET_USERID;
-        this.request(url, param, success, failed);
-    };
-
-    //获取facetoken的本身的详细信息
-    this.facetokenGetDetail = function (param, success, failed) {
-        var url = this.baseurl + FACETOEKN_GET_DETAIL;
-        this.request(url, param, success, failed);
-    };
-
-    //根据facetoken获取人脸信息
-    this.facetokenAnalyze = function (param, success, failed) {
-        var url = this.baseurl + FACETOEKN_ANALYZE;
-        this.request(url, param, success, failed);
-    };
-
-
-
-    //**************人体识别相关***************
-    //人体检测
-    this.bodyDetect = function (param, success, failed) {
-        var url = this.baseurl + HUMANBODY_DETECT;
-        this.request(url, param, success, failed);
-    };
-
-    //人体关键点检测
-    this.skeletonDetect = function (param, success, failed) {
-        var url = this.baseurl + HUMANBODY_SKELETON;
-        this.request(url, param, success, failed);
-    };
-
-
-
-
-
-
-    /* base64转二进制
-     * 传入base64数据
-     */
-    this.dataURItoBlob = function (dataURI) { // 图片转成Buffer
         const byteString = atob(dataURI.split(',')[1]);
         const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
         const ab = new ArrayBuffer(byteString.length);
@@ -208,12 +75,124 @@ exports.FACEPP = function() {
         }
         return new Blob([ab], {type: mimeString});
     }
+    //人脸比对
+    exports.compareFace = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACE_COMPARE;
+        this.request(url, param, success, failed);
+    };
+
+    //**************对faceset(人脸集合)的操作***************
+
+    // 创建faceset
+    exports.faceSetCreate = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_CREATE;
+        this.request(url, param, success, failed);
+    };
+
+    // 删除faceset
+    exports.faceSetdelete = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_DELETE;
+        this.request(url, param, success, failed);
+    };
+
+    //faceset 更新
+    exports.faceSetUpdate = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_UPDATE;
+        this.request(url, param, success, failed);
+    };
+
+    // 查询指定的faceset
+   exports.faceSetQuery = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_GET_DETAIL;
+        this.request(url, param, success, failed);
+    };
+
+    // 获取所有的faceset
+    exports.faceSetGetAll = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_GET_FACESETS;
+        this.request(url, param, success, failed);
+    };
+
+
+    //**************管理指定faceset内的人脸***************
+
+    //人脸搜索,根据相似度搜索人脸
+    exports.faceSearch = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACE_SEARCH;
+        this.request(url, param, success, failed);
+    };
+
+    // 添加人脸到指定faceset
+    exports.faceAdd = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_ADDFACE;
+        this.request(url, param, success, failed);
+    };
+
+    // 删除指定faceset中的某个人脸
+    exports.faceDelete = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_REMOVE_FACE;
+        this.request(url, param, success, failed);
+    };
+
+    // 异步添加人脸到指定faceset
+    exports.faceAddAsnc = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_ADDFACE_ASYNC;
+        this.request(url, param, success, failed);
+    };
+
+    // 异步删除指定faceset中的某个人脸
+    exports.faceDelete = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACESET_REMOVE_FACE_ASYNC;
+        this.request(url, param, success, failed);
+    };
+
+    // 异步任务状态查询
+    exports.asyncStatus = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACEAET_TASK_QUERY;
+        this.request(url, param, success, failed);
+    };
+
+    //**************对facetoken(人脸标识)的操作***************
+    // 设置userid
+    exports.facetokenSetUserID = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACETOEKN_SET_USERID;
+        this.request(url, param, success, failed);
+    };
+
+    //获取facetoken的本身的详细信息
+   exports.facetokenGetDetail = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACETOEKN_GET_DETAIL;
+        this.request(url, param, success, failed);
+    };
+
+    //根据facetoken获取人脸信息
+   exports.facetokenAnalyze = function (param, success, failed) {
+        var url = FACE_HOST_CN + FACETOEKN_ANALYZE;
+        this.request(url, param, success, failed);
+    };
+
+
+
+    //**************人体识别相关***************
+    //人体检测
+    exports.bodyDetect = function (param, success, failed) {
+        var url = FACE_HOST_CN + HUMANBODY_DETECT;
+        this.request(url, param, success, failed);
+    };
+
+    //人体关键点检测
+    exports.skeletonDetect = function (param, success, failed) {
+        var url = FACE_HOST_CN + HUMANBODY_SKELETON;
+        this.request(url, param, success, failed);
+    };
+
+
 
     /* POST请求
      * url: 请求地址
      * 请求携带的参数
      */
-    this.request = function (url, dic, success, failed) {//发送POST请求
+    exports.request = function (url, dic, success, failed) {//发送POST请求
 
         var formData = new window.FormData();
 
@@ -233,7 +212,4 @@ exports.FACEPP = function() {
             contentType: false,
             timeout: 20000,//20秒超时时间
         }).done(success).fail(failed);
-    };
-
-
-}
+};

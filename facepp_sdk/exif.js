@@ -28,9 +28,9 @@
         // colorspace tags
         0xA001 : "ColorSpace",              // Color space information tag
 
-        // image configuration
-        0xA002 : "PixelXDimension",         // Valid width of meaningful image
-        0xA003 : "PixelYDimension",         // Valid height of meaningful image
+        // studentImage configuration
+        0xA002 : "PixelXDimension",         // Valid width of meaningful studentImage
+        0xA003 : "PixelYDimension",         // Valid height of meaningful studentImage
         0x9101 : "ComponentsConfiguration", // Information about channels
         0x9102 : "CompressedBitsPerPixel",  // Compressed bits per pixel
 
@@ -42,8 +42,8 @@
         0xA004 : "RelatedSoundFile",        // Name of related sound file
 
         // date and time
-        0x9003 : "DateTimeOriginal",        // Date and time when the original image was generated
-        0x9004 : "DateTimeDigitized",       // Date and time when the image was stored digitally
+        0x9003 : "DateTimeOriginal",        // Date and time when the original studentImage was generated
+        0x9004 : "DateTimeDigitized",       // Date and time when the studentImage was stored digitally
         0x9290 : "SubsecTime",              // Fractions of seconds for DateTime
         0x9291 : "SubsecTimeOriginal",      // Fractions of seconds for DateTimeOriginal
         0x9292 : "SubsecTimeDigitized",     // Fractions of seconds for DateTimeDigitized
@@ -71,7 +71,7 @@
         0xA20E : "FocalPlaneXResolution",   // Number of pixels in width direction per FocalPlaneResolutionUnit
         0xA20F : "FocalPlaneYResolution",   // Number of pixels in height direction per FocalPlaneResolutionUnit
         0xA210 : "FocalPlaneResolutionUnit",    // Unit for measuring FocalPlaneXResolution and FocalPlaneYResolution
-        0xA214 : "SubjectLocation",         // Location of subject in image
+        0xA214 : "SubjectLocation",         // Location of subject in studentImage
         0xA215 : "ExposureIndex",           // Exposure index selected on camera
         0xA217 : "SensingMethod",           // Image sensor type
         0xA300 : "FileSource",              // Image source (3 == DSC)
@@ -83,7 +83,7 @@
         0xA404 : "DigitalZoomRation",       // Digital zoom ratio
         0xA405 : "FocalLengthIn35mmFilm",   // Equivalent foacl length assuming 35mm film camera (in mm)
         0xA406 : "SceneCaptureType",        // Type of scene
-        0xA407 : "GainControl",             // Degree of overall image gain adjustment
+        0xA407 : "GainControl",             // Degree of overall studentImage gain adjustment
         0xA408 : "Contrast",                // Direction of contrast processing applied by camera
         0xA409 : "Saturation",              // Direction of saturation processing applied by camera
         0xA40A : "Sharpness",               // Direction of sharpness processing applied by camera
@@ -92,7 +92,7 @@
 
         // other tags
         0xA005 : "InteroperabilityIFDPointer",
-        0xA420 : "ImageUniqueID"            // Identifier assigned uniquely to each image
+        0xA420 : "ImageUniqueID"            // Identifier assigned uniquely to each studentImage
     };
 
     var TiffTags = EXIF.TiffTags = {
@@ -181,8 +181,8 @@
         0x011B: "YResolution",
         0x011C: "PlanarConfiguration",
         0x0128: "ResolutionUnit",
-        0x0201: "JpegIFOffset",    // When image format is JPEG, this value show offset to JPEG data stored.(aka "ThumbnailOffset" or "JPEGInterchangeFormat")
-        0x0202: "JpegIFByteCount", // When image format is JPEG, this value shows data size of JPEG image (aka "ThumbnailLength" or "JPEGInterchangeFormatLength")
+        0x0201: "JpegIFOffset",    // When studentImage format is JPEG, this value show offset to JPEG data stored.(aka "ThumbnailOffset" or "JPEGInterchangeFormat")
+        0x0202: "JpegIFByteCount", // When studentImage format is JPEG, this value shows data size of JPEG studentImage (aka "ThumbnailLength" or "JPEGInterchangeFormatLength")
         0x0211: "YCbCrCoefficients",
         0x0212: "YCbCrSubSampling",
         0x0213: "YCbCrPositioning",
@@ -341,7 +341,7 @@
 
 
     function base64ToArrayBuffer(base64, contentType) {
-        contentType = contentType || base64.match(/^data\:([^\;]+)\;base64,/mi)[1] || ''; // e.g. 'data:image/jpeg;base64,...' => 'image/jpeg'
+        contentType = contentType || base64.match(/^data\:([^\;]+)\;base64,/mi)[1] || ''; // e.g. 'data:studentImage/jpeg;base64,...' => 'studentImage/jpeg'
         base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
         var binary = atob(base64);
         var len = binary.length;
@@ -399,7 +399,7 @@
                     if (this.status == 200 || this.status === 0) {
                         handleBinaryFile(http.response);
                     } else {
-                        throw "Could not load image";
+                        throw "Could not load studentImage";
                     }
                     http = null;
                 };
@@ -688,7 +688,7 @@
         var IFD1OffsetPointer = getNextIFDOffset(dataView, tiffStart+firstIFDOffset, bigEnd);
 
         if (!IFD1OffsetPointer) {
-            // console.log('******** IFD1Offset is empty, image thumb not found ********');
+            // console.log('******** IFD1Offset is empty, studentImage thumb not found ********');
             return {};
         }
         else if (IFD1OffsetPointer > dataView.byteLength) { // this should not happen
@@ -701,37 +701,37 @@
 
         // EXIF 2.3 specification for JPEG format thumbnail
 
-        // If the value of Compression(0x0103) Tag in IFD1 is '6', thumbnail image format is JPEG.
-        // Most of Exif image uses JPEG format for thumbnail. In that case, you can get offset of thumbnail
+        // If the value of Compression(0x0103) Tag in IFD1 is '6', thumbnail studentImage format is JPEG.
+        // Most of Exif studentImage uses JPEG format for thumbnail. In that case, you can get offset of thumbnail
         // by JpegIFOffset(0x0201) Tag in IFD1, size of thumbnail by JpegIFByteCount(0x0202) Tag.
         // Data format is ordinary JPEG format, starts from 0xFFD8 and ends by 0xFFD9. It seems that
         // JPEG format and 160x120pixels of size are recommended thumbnail format for Exif2.1 or later.
 
         if (thumbTags['Compression']) {
-            // console.log('Thumbnail image found!');
+            // console.log('Thumbnail studentImage found!');
 
             switch (thumbTags['Compression']) {
                 case 6:
-                    // console.log('Thumbnail image format is JPEG');
+                    // console.log('Thumbnail studentImage format is JPEG');
                     if (thumbTags.JpegIFOffset && thumbTags.JpegIFByteCount) {
                     // extract the thumbnail
                         var tOffset = tiffStart + thumbTags.JpegIFOffset;
                         var tLength = thumbTags.JpegIFByteCount;
                         thumbTags['blob'] = new Blob([new Uint8Array(dataView.buffer, tOffset, tLength)], {
-                            type: 'image/jpeg'
+                            type: 'studentImage/jpeg'
                         });
                     }
                 break;
 
             case 1:
-                console.log("Thumbnail image format is TIFF, which is not implemented.");
+                console.log("Thumbnail studentImage format is TIFF, which is not implemented.");
                 break;
             default:
-                console.log("Unknown thumbnail image format '%s'", thumbTags['Compression']);
+                console.log("Unknown thumbnail studentImage format '%s'", thumbTags['Compression']);
             }
         }
         else if (thumbTags['PhotometricInterpretation'] == 2) {
-            console.log("Thumbnail image format is RGB, which is not implemented.");
+            console.log("Thumbnail studentImage format is RGB, which is not implemented.");
         }
         return thumbTags;
     }

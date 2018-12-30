@@ -54,7 +54,7 @@ exports.getTeacherInfo = async function(tid){          //根据tid获取教师�
         db = await mongoClient.connect(url,{ useNewUrlParser: true } );
         var teacherTable = await db.db("Looking").collection("teacher");
         result = await teacherTable.findOne({tid :tid});
-        console.log(result);
+        // console.log(result);
         var info = {tid:result.tid,btime:result.btime,tname:result.tname,phone:result.tel,kname:result.kname,gender:result.sex,fac:result.fac};
         // console.log(result);
         db.close();
@@ -115,11 +115,24 @@ exports.update =   async function (tid, tname,kname,gender,birth,fac) {
 
         db = await mongoClient.connect(url);
         var teacherTable = await db.db("Looking").collection("teacher");
-        result = await teacherTable.updateOne({tid: tid},{$set:{tname:tname,kname:kname,sex:gender,btime:birth,fac:fac}});
-        console.log(result.kname);
+        var temp2 = await teacherTable.updateOne({tid: tid},{$set:{tname:tname,kname:kname,sex:gender,btime:birth,fac:fac}});
+        var temp = await this.getTeacherInfo(tid);
+        result = {
+            tid:temp.tid,
+            tname:temp.tname,
+            tel : temp.phone,
+            kname:temp.kname,
+            birth :temp.btime,
+            gender:temp.gender,
+            fac :temp.fac
+        }
+        // console.log(temp);
+        console.log(result);
+        return result;
         db.close();
     } catch (e) {
         console.log(e.message);
+        return "error";
     }
 };
 //

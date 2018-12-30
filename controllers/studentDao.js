@@ -13,7 +13,7 @@ exports.getStudentInfo= async function(sid){
         db = await mongoClient.connect(url);
         var studentListTable = await db.db("Looking").collection("student");
         result = await studentListTable.findOne({sid:sid});
-        // console.log("haha")
+
         var studentInfo ={
             sid:result.sid,
             sname:result.sname

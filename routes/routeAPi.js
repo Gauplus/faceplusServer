@@ -2,7 +2,7 @@ let api = require('../controllers/api');
 module.exports = function (app) {
 
     app.route('/login')      //finish
-    // .get(total.render)
+
         .post(api.login);
 
 
