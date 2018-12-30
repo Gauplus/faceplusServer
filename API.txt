@@ -1,0 +1,41 @@
+eg: http://localhost:3000/login
+
+/login     use post method
+param id  教师id
+param password  
+return "OK"   成功
+       "null" 未注册
+       "error"账号密码错误
+
+/register  use post method
+param  id    教师id
+param  phone 电话
+param  password 
+return "registered" 已注册
+       "OK"   成功
+       "error" 错误
+ 
+/getTeacherInfo   get method
+param  id  教师id
+return   eg: {"tid":"654005","btime":"","tname":"王永   利","phone":"16536865336","kname":"","gender":"男","fac":"计算机科学与工程学院"}
+
+/modifyTeacherInfo   post method
+param tname   教师名字
+param kname   昵称
+param birth  生日 
+param gender 性别
+param school 学院
+param tid    教师id
+return {"tid":"654005","tname":"王永利","tel":"16536865336","kname":"无","birth":"1111","gender":"男","fac":"计算机"}
+
+/getCourses      get method
+param tid  教师id
+return eg:[{"cid":"06030001","cname":"图形学和可视化计算","place":"一工  202","ctime":"12-16周周二第三大节 周四第四大节"},{"cid":"06030002","cname":"class2","place":"一工202","ctime":"12-16周周二第5大节"}]
+
+/getStudentList  get method
+param tid   教师id
+param cid  课程id
+param place  课程地点 
+param ctime 课程时间
+return eg: [{"sid":"916106840611","sname":"张帆"},{"sid":"916106840622","sname":"李高正"},{"sid":"916106840639","sname":"游金鱼"},{"sid":"916106840331","sname":"吕进"}]
+      
