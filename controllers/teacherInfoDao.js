@@ -116,19 +116,8 @@ exports.update =   async function (tid, tname,kname,gender,birth,fac) {
         db = await mongoClient.connect(url);
         var teacherTable = await db.db("Looking").collection("teacher");
         var temp2 = await teacherTable.updateOne({tid: tid},{$set:{tname:tname,kname:kname,sex:gender,btime:birth,fac:fac}});
-        var temp = await this.getTeacherInfo(tid);
-        result = {
-            tid:temp.tid,
-            tname:temp.tname,
-            tel : temp.phone,
-            kname:temp.kname,
-            birth :temp.btime,
-            gender:temp.gender,
-            fac :temp.fac
-        }
-        // console.log(temp);
-        console.log(result);
-        return result;
+        result = "OK"
+;        return result;
         db.close();
     } catch (e) {
         console.log(e.message);

@@ -29,13 +29,18 @@ var face = require('./controllers/faceApi');
 var attendenAPI = require('./attendence/attendenAPI');
 // var urls = attendenAPI.getImgUrl('./studentImage');
 // console.log(urls);
- var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-  attendenAPI.detect("./studentImage/周玥.jpg")
+
+async function test() {
+  var a = await attendenAPI.detect("./studentImage/test1.jpg");
+  var b = await attendenAPI.detect("./studentImage/test2.jpg");
+  console.log(a.toString());
+  attendenAPI.compare(a.toString(), b.toString())
+}
+// attendenAPI.attendent("654001","周一","06030001","I202");
+
+  var server = app.listen(3000, function () {
   console.log("启动成功");
-
-
+   test()
 });
 
 module.exports = app;

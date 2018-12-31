@@ -6,7 +6,9 @@ var formidable = require('formidable');
 var path = require('path');
 var querystring = require('querystring')
 var fs = require('fs');
-var count = 0;
+var recordDao = require('./recordDao');
+var attendenceAPI = require('../attendence/attendenAPI')
+
 exports.login = async function (req, res, next) {     //测试完成
     var tid = req.body.id;
     var pwd = req.body.password;
@@ -81,11 +83,20 @@ exports.getStudentList = async  function (req,res,next) {   //finish
     res.send(JSON.stringify(studentList));
 };
 
-exports.getRecords = function (req,res,next) {
-       res.send("get Record sucessful");
+exports.getRecords =async function (req,res,next) {
+    var tid = req.query.tid;
+    var place = req.query.place;
+    var cid = req.query.cid;
+    var ctime = req.query.ctime;
+       var recordlist = await recordDao.query(cid,tid,ctime,place)
+       res.send(result);
 };
 
 exports.attendence = function(req,res,next){
+    var tid = req.query.tid;
+    var place = req.query.place;
+    var cid = req.query.cid;
+    var ctime = req.query.ctime;
     req.setEncoding('binary');
     var body = '';   // 文件数据
     var fileName = '';  // 文件名
@@ -106,7 +117,7 @@ exports.attendence = function(req,res,next){
             var fileInfo = file['Content-Disposition'].split('; ');
             for (value in fileInfo){
                 if (fileInfo[value].indexOf("filename=") != -1){
-                    fileName = count+".jpg";
+                    fileName = "class.jpg";
 
                     if (fileName.indexOf('\\') != -1){
                         fileName = fileName.substring(fileName.lastIndexOf('\\')+1);
@@ -132,13 +143,17 @@ exports.attendence = function(req,res,next){
             var binaryData = binaryDataAlmost.substring(0, binaryDataAlmost.indexOf('--'+boundary+'--'));
 
             // 保存文件
-            fs.writeFile(path.join('./studentImage', fileName), binaryData, 'binary', function(err) {
-                res.send('图片上传完成');
-                count = count+1;
+            fs.writeFile(path.join('./image', fileName), binaryData, 'binary', async function (err) {
+                // res.send('图片上传完成');
+                var recordlist = await attendenceAPI.attendent(tid, ctime, cid, place)
+                res.send(recordlist);
             });
         } else {
-            res.send('只能上传图片文件');
+            // res.send('只能上传图片文件');
+            res.send("出错")
         }
     });
+    //以上将上传的图片保存到image文件夹下
+
 };
 

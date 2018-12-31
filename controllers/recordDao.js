@@ -11,14 +11,13 @@ exports.query = async function(cid,tid,ctime,place){             //根据课程�
     let db, result;
     try{
         db = await mongoClient.connect(url);
-        var courseTable = await db.db("Looking").collection("course");
-        result = await courseTable.find ({tid :"12345"}).toArray();
+        var courseTable = await db.db("Looking").collection("record");
+        result = await courseTable.find ({tid :tid}).toArray();
 
         var recordlist = [];
-        var i;
-        for(i=0;i<result.length;i++)
+        for(let i of result)
         {
-            recordlist.push(result[i]);
+            recordlist.push(i);
         }
         // console.log(course);
         return recordlist;
@@ -31,15 +30,6 @@ exports.query = async function(cid,tid,ctime,place){             //根据课程�
 
 
 exports.insert =   async function (tid,sid,sname,time,isAttend,state) {         //人脸识别签到时用于记录签到信息
-    /*
-    * @param tid 教师id
-    * @param tname 教师姓名
-    * @param pwd 密码
-    * return 0 注册失败
-    *        1 注册成功
-    *        2 已经注册
-    */
-
     var url = 'mongodb://localhost:27017/Looking';
     let db, result, index;
     try {
@@ -61,7 +51,20 @@ exports.insert =   async function (tid,sid,sname,time,isAttend,state) {         
     }
 };
 
+exports.insertHere =   async function (tid,sid,place,cid,ctime) {         //人脸识别签到时用于记录已经签到的
+    var url = 'mongodb://localhost:27017/Looking';
+    let db, result;
+    try {
+        db = await mongoClient.connect(url);
+        var studentTable = await db.db("Looking").collection("student");
+        result = await studentTable.findOne({sid: sid});
+        var recordTable = await db.db("Looking").collection("record");
+        recordTable.updateOne({sid: sid},{$set:{sname:result.sname,time:new Date,isAttend:true},state:"听课",tid:tid,ctime:ctime,cid:cid});
 
+    } catch (e) {
+        console.log(e.message);
+    }
+};
 
 
 
