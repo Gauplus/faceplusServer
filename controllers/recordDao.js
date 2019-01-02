@@ -2,7 +2,7 @@ var async = require('async');
 var mongoClient = require('mongodb').MongoClient;
 
 
-exports.query = async function(cid,tid,ctime,place){             //根据课程信息返回一个签到记录表
+exports.query = async function(cid,tid,ctime,place,time){             //根据课程信息返回一个签到记录表
     /*
     * @param tid  teacher tid
     * return  course 的详细信息
@@ -12,7 +12,7 @@ exports.query = async function(cid,tid,ctime,place){             //根据课程�
     try{
         db = await mongoClient.connect(url);
         var courseTable = await db.db("Looking").collection("record");
-        result = await courseTable.find ({tid :tid}).toArray();
+        result = await courseTable.find ({tid :tid,time:time}).toArray();
 
         var recordlist = [];
         for(let i of result)

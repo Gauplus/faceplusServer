@@ -85,8 +85,8 @@ exports.compare = async function (face_token1,face_token2) {          //返回fa
 };
 
 exports.attendent = async function (tid,ctime,cid,place) {
-    gm('./image/class.jpg')
-        .resize(1024, 1024)
+    // gm('./image/class.jpg')
+    //     .resize(1024, 1024)
     var faces = await this.detect('./image/class.jpg');       //返回图片上的所有人脸token
     var sfaces = []  //存储所有学生的token  用于和faces做对比
     var here = []; //来了的

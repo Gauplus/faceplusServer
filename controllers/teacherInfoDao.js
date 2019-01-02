@@ -124,6 +124,7 @@ exports.update =   async function (tid, tname,kname,gender,birth,fac) {
         return "error";
     }
 };
+
 //
 // exports.delete =   async function (tid, tname, pwd) {   //暂时用不到
 //     /*

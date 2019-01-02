@@ -26,9 +26,10 @@ exports.query = async function(tid,ctime,place,cid){             //根据课程�
         {
             studentlist.push(await studentDao.getStudentInfo(sidList[i]));
         }
-        // console.log(studentlist);
-        return studentlist;
+        console.log(studentlist);
         db.close();
+        return studentlist;
+
 
     }catch(e){
         console.error(e.message);
@@ -48,7 +49,8 @@ exports.getStudentsSid = async function(tid,ctime,place,cid){             //根�
         var studentListTable = await db.db("Looking").collection("studentList");
 
         result = await studentListTable.findOne({tid :tid,ctime:ctime,place:place,cid:cid});
-        // console.log(result);
+        console.log(result);
+        console.log("1111111");
         var i;
         var sidList = [];
         for(i=0;i<result.sid.length;i++)

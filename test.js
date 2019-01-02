@@ -38,7 +38,7 @@ function httprequest(requestData){
     });
 
 };
-let bitmap = fs.readFileSync("./studentImage/test1.jpg");
+let bitmap = fs.readFileSync("./studentImage/916106840331.jpg");
 let base64str = Buffer.from(bitmap, 'binary').toString('base64');
 
 var data = querystring.stringify({
